@@ -15,65 +15,73 @@ Before using the script, you need to get the necessary API credentials from Last
 
 ### 1. Get Your Last.fm API Key and Secret
 
-1.  Go to the [Last.fm API Account page](https://www.last.fm/api/account).
-2.  Log in with your Last.fm username and password.
-3.  Click on **"Create an account"** and create a new application. The details can be anything you choose.
-4.  Once created, you will be given an **API Key** and an **API Secret**. Keep these handy.
+1. Go to the [Last.fm API Account page](https://www.last.fm/api/account).
+2. Log in with your Last.fm username and password.
+3. Click on **"Create an account"** and create a new application. The details can be anything you choose.
+4. Once created, you will be given an **API Key** and an **API Secret**. Keep these handy.
 
 ### 2. Generate Your Password Hash
 
 The script requires an MD5 hash of your password for authentication. You can generate this easily using Python.
 
-1.  Open a terminal and run `python3`.
-2.  At the Python prompt, paste the following code, replacing `"your_password_here"` with your actual Last.fm password:
+1. Open a terminal and run `python3`.
+2. At the Python prompt, paste the following code, replacing `"your_password_here"` with your actual Last.fm password:
 
 ```python
 import hashlib
 password = "your_password_here"
 password_hash = hashlib.md5(password.encode('utf-8')).hexdigest()
 print(password_hash)
+```
 
+3. Copy the 32-character string that is printed. This is your password hash.
 
-### 3.Copy the 32-character string that is printed. This is your password hash.
+## 🚀 Installation
 
-### 🚀 Installation
 Follow these steps to get the script running on your local machine.
 
-### 1.Clone the repository:
-```
-git clone [https://github.com/itachi-re/lastfm-scrobbler.git](https://github.com/itachi-re/lastfm-scrobbler.git)
-cd lastfm-scrobbler
+### 1. Clone the repository:
 
-##2.Create a virtual environment:
+```bash
+git clone https://github.com/itachi-re/lastfm-scrobbler.git
+cd lastfm-scrobbler
+```
+
+### 2. Create a virtual environment:
+
 This is the safest way to install dependencies without affecting your system's Python installation.
 
-```
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-You should see (venv) appear in your terminal prompt.
+You should see `(venv)` appear in your terminal prompt.
 
-###3.Install the required libraries:
+### 3. Install the required libraries:
 
-```python
- pip install pylast
+```bash
+pip install pylast
+```
 
-📝 Usage
+## 📝 Usage
 
 To run the script, use the following command. Make sure you are inside your virtual environment and replace the placeholders with your actual credentials and file path.
-Bash
 
+```bash
 python3 manual_scrobbler.py YOUR_API_KEY YOUR_API_SECRET YOUR_USERNAME YOUR_PASSWORD_HASH /path/to/your/file.csv
+```
 
 Example:
-Bash
 
+```bash
 python3 manual_scrobbler.py c2ec6ca444b023c8b62c970a4f1bbc2e 0f2ca7559ec8f03f2e5bb3f2dc8e84d0 itachi-re 767322d66b74474cff0eb25ce5fa31fe generated_scrobbles_log_full.csv
+```
 
 The script will then read your CSV file and submit your scrobbles to Last.fm in a single batch.
 
-🛠️ Troubleshooting
+## 🛠️ Troubleshooting
 
-externally-managed-environment error: This is a common issue on many Linux distributions. The best solution is to use a virtual environment as described in the "Installation" section.
+**externally-managed-environment error:** This is a common issue on many Linux distributions. The best solution is to use a virtual environment as described in the "Installation" section.
 
-TypeError: _Network.scrobble() missing arguments: This error indicates a bug with a different tool. The manual_scrobbler.py script provided here uses the network.scrobble_many() function, which is the correct method for bulk uploads with the pylast library.
+**TypeError: _Network.scrobble() missing arguments:** This error indicates a bug with a different tool. The manual_scrobbler.py script provided here uses the `network.scrobble_many()` function, which is the correct method for bulk uploads with the pylast library.
