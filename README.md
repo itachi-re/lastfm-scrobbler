@@ -1,21 +1,58 @@
-# Last.fm Manual Scrobbler
+<div align="center">
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stars)
+# 🎵 Last.fm Manual Scrobbler
+
+**Bulk-upload missing listening history to Last.fm from a CSV file — for when your scrobbler fails you.**
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/issues)
 [![GitHub license](https://img.shields.io/github/license/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/blob/main/LICENSE)
-[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
+[![Maintained](https://img.shields.io/badge/maintained-yes-success.svg)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
 
-A simple Python script to manually upload missing listening data to Last.fm from a CSV file. Perfect for filling data gaps when your scrobbler fails!
+**Runs anywhere Python does:**
+
+[![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)](#-prerequisites)
+[![Windows](https://img.shields.io/badge/Windows-supported-0078D6?logo=windows&logoColor=white)](#-prerequisites)
+[![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#-prerequisites)
+[![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#-android--termux)
+
+</div>
+
+---
+
+## 📚 Table of Contents
+
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Setup](#-setup)
+- [Quick Start](#-quick-start)
+- [CSV Format](#-csv-format)
+- [Command-Line Options](#️-command-line-options)
+- [Rate & Batch Handling](#️-rate--batch-handling)
+- [Example Output](#-example-output)
+- [Android / Termux](#-android--termux)
+- [Troubleshooting](#-troubleshooting)
+- [Advanced Usage](#-advanced-usage)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+
+---
 
 ## ✨ Features
 
-- **Batch upload**: submits in batches of 50 (Last.fm's API limit per `scrobble_many` call), with automatic retry on transient network errors
-- **Pano Scrobbler compatible**: works with `timeMs` (milliseconds) or plain `timestamp` (seconds) export columns
-- **Timestamp validation**: rows older than 14 days or more than 2 hours in the future are rejected up front — Last.fm won't accept them anyway, so they're filtered before upload with a clear warning instead of failing a whole batch
-- **De-duplication**: identical artist/title/timestamp rows are automatically skipped
-- **Dry-run mode**: validate and preview your CSV without submitting anything
-- **Credentials via environment variables**: keep your API key and password hash out of shell history
-- **Progress + error logging**: per-batch status via Python's `logging` module, with distinct exit codes for scripting/cron use
+| | |
+|---|---|
+| 📦 **Batch upload** | Submits in batches of 50 (Last.fm's `scrobble_many` API limit), with automatic retry on transient network errors |
+| 🔄 **Pano Scrobbler compatible** | Works with `timeMs` (milliseconds) or plain `timestamp` (seconds) export columns |
+| ✅ **Timestamp validation** | Rows older than 14 days or more than 2 hours in the future are rejected up front, with a clear warning instead of failing a whole batch |
+| 🧹 **De-duplication** | Identical artist/title/timestamp rows are automatically skipped |
+| 🧪 **Dry-run mode** | Validate and preview your CSV without submitting anything |
+| 🔐 **Env-var credentials** | Keep your API key and password hash out of shell history |
+| 📊 **Progress + error logging** | Per-batch status via Python's `logging` module, with distinct exit codes for scripting/cron use |
+| 🖥️ **Cross-platform** | Linux, Windows, macOS, and Android via Termux — anywhere Python 3.6+ runs |
 
 ## 📝 Prerequisites
 
@@ -141,6 +178,27 @@ options:
 14:04:44 [INFO] Done! 1247 scrobble(s) submitted successfully.
 ```
 
+## 📱 Android / Termux
+
+The script runs fine under [Termux](https://termux.dev/) on Android — no root required:
+
+```bash
+# Inside Termux
+pkg update && pkg upgrade
+pkg install python git
+
+git clone https://github.com/itachi-re/lastfm-scrobbler.git
+cd lastfm-scrobbler
+
+pip install -r requirements.txt
+python manual_scrobbler.py your_file.csv
+```
+
+Notes for Termux:
+- Skip the `venv` step if storage is tight — Termux's Python install is already isolated per-app.
+- Use `termux-setup-storage` first if your CSV lives in shared storage (e.g. `~/storage/downloads/`).
+- Set credentials as environment variables in `~/.bashrc` so you don't retype them each session.
+
 ## 🆘 Troubleshooting
 
 | Issue | Solution |
@@ -151,6 +209,7 @@ options:
 | **`"User not authorized"`** | Verify your username & password hash are correct |
 | **Rows skipped as "out of range"** | Last.fm only accepts scrobbles from the last 14 days — older listens can't be backfilled this way |
 | **Upload fails mid-way** | Check your CSV formatting and internet connection; failed batches are logged with the batch number so you can isolate the issue |
+| **`ModuleNotFoundError: pylast` (Termux)** | Run `pkg install python-pip` first, then `pip install -r requirements.txt` |
 
 ## 🔧 Advanced Usage
 
@@ -185,12 +244,12 @@ python3 manual_scrobbler.py --help
 
 ---
 
+<div align="center">
+
 ⭐ **Star this repo if it helped fill your Last.fm gaps!**
 
 **Made with ❤️ for music lovers** 🎵
 
----
+<sub>Built by <a href="https://github.com/itachi-re">@itachi-re</a> | Questions? Open an <a href="https://github.com/itachi-re/lastfm-scrobbler/issues/new">issue</a></sub>
 
-<div align="center">
-  <sub>Built by <a href="https://github.com/itachi-re">@itachi-re</a> | Questions? Open an <a href="https://github.com/itachi-re/lastfm-scrobbler/issues/new">issue</a></sub>
 </div>
