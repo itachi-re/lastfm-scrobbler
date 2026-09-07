@@ -27,6 +27,10 @@
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
 - [Setup](#-setup)
+  - [1. Get Your Last.fm API Credentials](#1-get-your-lastfm-api-credentials)
+  - [2. Generate Your Password Hash](#2-generate-your-password-hash)
+  - [3. Store Your Credentials Securely](#3-store-your-credentials-securely)
+  - [4. Set Up a Virtual Environment](#4-set-up-a-virtual-environment)
 - [Quick Start](#-quick-start)
 - [CSV Format](#-csv-format)
 - [Command-Line Options](#️-command-line-options)
@@ -73,14 +77,31 @@
 
 ### 2. Generate Your Password Hash
 
-```python
+Last.fm's API expects your password as an **MD5 hash**, never in plaintext.
+
+> ⚠️ **Don't paste Python code directly into your shell.** Your shell (bash/zsh) doesn't understand Python syntax and will throw a parse error. Either drop into a Python interpreter first, or — better — use a throwaway script file. This also avoids escaping headaches if your password contains shell-special characters like `$`, `` ` ``, or `!`.
+
+```bash
+cat > hash.py << 'EOF'
 import hashlib
 password = "your_actual_password"
-password_hash = hashlib.md5(password.encode('utf-8')).hexdigest()
-print(password_hash)  # Copy this 32-character string
+print(hashlib.md5(password.encode('utf-8')).hexdigest())
+EOF
+
+python3 hash.py
+rm hash.py
 ```
 
-**💡 Pro tip**: export your credentials as environment variables instead of passing them as flags — they won't leak into your shell history or `ps` output:
+Copy the 32-character string it prints — that's your `LASTFM_PASSWORD_HASH`.
+
+*(The `rm hash.py` at the end matters: this keeps your plaintext password from lingering in a file on disk.)*
+
+### 3. Store Your Credentials Securely
+
+You now have four secrets: **API key**, **API secret**, **username**, and **password hash**. How you store them depends on your setup — pick the option that fits:
+
+<details>
+<summary><strong>Option A — Quick & temporary (this terminal session only)</strong></summary>
 
 ```bash
 export LASTFM_API_KEY="your_api_key"
@@ -88,6 +109,80 @@ export LASTFM_API_SECRET="your_api_secret"
 export LASTFM_USERNAME="your_username"
 export LASTFM_PASSWORD_HASH="your_password_hash"
 ```
+These vanish the moment you close the terminal — fine for a one-off run, not for repeated use.
+</details>
+
+<details>
+<summary><strong>Option B — Permanent, simple dotfiles (not using a public dotfiles repo)</strong></summary>
+
+Append to your shell config (`~/.zshrc` for zsh, `~/.bashrc` for bash) so they load automatically every new session:
+
+```bash
+cat >> ~/.zshrc << 'EOF'
+export LASTFM_API_KEY="your_api_key"
+export LASTFM_API_SECRET="your_api_secret"
+export LASTFM_USERNAME="your_username"
+export LASTFM_PASSWORD_HASH="your_password_hash"
+EOF
+
+source ~/.zshrc
+```
+</details>
+
+<details open>
+<summary><strong>Option C — Recommended if your dotfiles are managed with GNU Stow and backed up on GitHub ⭐</strong></summary>
+
+If your `.zshrc` (or any file `stow` symlinks) is tracked in a public repo, **never** put real secrets directly in it. Instead, keep secrets in a separate, untracked, locked-down file, and only reference it from your tracked config:
+
+```bash
+# 1. Create a local-only secrets file, outside version control
+mkdir -p ~/.config/local
+cat > ~/.config/local/lastfm.env << 'EOF'
+export LASTFM_API_KEY="your_api_key"
+export LASTFM_API_SECRET="your_api_secret"
+export LASTFM_USERNAME="your_username"
+export LASTFM_PASSWORD_HASH="your_password_hash"
+EOF
+
+# 2. Lock it down to your user only
+chmod 600 ~/.config/local/lastfm.env
+
+# 3. Gitignore it, so a stow re-sync or `git add .` never picks it up
+echo ".config/local/" >> ~/dotfiles/.gitignore   # adjust path to your repo root
+```
+
+Then add **one safe, secret-free line** to your tracked `.zshrc`:
+
+```bash
+[ -f ~/.config/local/lastfm.env ] && source ~/.config/local/lastfm.env
+```
+
+Reload your shell to pick it up:
+
+```bash
+source ~/.zshrc
+```
+
+**Result:** your public repo only ever contains the harmless `source` line — the real secrets live in a local, untracked, `chmod 600` file that never leaves your machine. This same pattern works for any other secrets you pick up later (GitHub tokens, AWS keys, etc.) — just add more conditional `source` lines.
+</details>
+
+**Verify it worked** (any option):
+```bash
+echo $LASTFM_API_KEY
+```
+If that prints your key, you're good.
+
+### 4. Set Up a Virtual Environment
+
+```bash
+cd lastfm-scrobbler
+python3 -m venv venv
+source venv/bin/activate
+```
+
+> 💡 `python3 -m venv venv` isn't creating "two environments" — `-m venv` tells Python to run its built-in **venv module**; the second `venv` is just the **folder name** you're choosing for the environment (convention, not a requirement). `python3 -m venv myenv` would work identically, just naming the folder `myenv` instead.
+
+The `venv/` folder is created fresh inside the repo and doesn't need backing up — if it ever breaks, just delete it and re-run the command. Deactivate anytime with `deactivate`.
 
 ## 🚀 Quick Start
 
@@ -103,7 +198,10 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run the scrobbler (using env vars set above)
+# 4. Dry-run first — validate your CSV without submitting anything
+python3 manual_scrobbler.py --dry-run your_file.csv
+
+# 5. Run for real (using env vars set up in Setup step 3)
 python3 manual_scrobbler.py your_file.csv
 ```
 
@@ -197,13 +295,14 @@ python manual_scrobbler.py your_file.csv
 Notes for Termux:
 - Skip the `venv` step if storage is tight — Termux's Python install is already isolated per-app.
 - Use `termux-setup-storage` first if your CSV lives in shared storage (e.g. `~/storage/downloads/`).
-- Set credentials as environment variables in `~/.bashrc` so you don't retype them each session.
+- Set credentials as environment variables in `~/.bashrc` so you don't retype them each session (see [Setup step 3](#3-store-your-credentials-securely) for the secure-storage pattern).
 
 ## 🆘 Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | **`externally-managed-environment`** | Use a virtual environment: `python3 -m venv venv` |
+| **`zsh: parse error near ...`** | You pasted Python code straight into your shell. Run `python3` first to enter the interpreter, or use the script-file method in [Setup step 2](#2-generate-your-password-hash) |
 | **`Missing required credential(s)`** | Pass all four credentials as flags, or set the matching `LASTFM_*` env var |
 | **`"Invalid API key"`** | Double-check your API key/secret from Last.fm |
 | **`"User not authorized"`** | Verify your username & password hash are correct |
