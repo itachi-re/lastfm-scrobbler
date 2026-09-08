@@ -7,6 +7,7 @@ follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- `music-metadata.sh`: a standalone Bash script that scans a music directory (FLAC, M4A, MP3, WAV) and outputs a JSON array of track metadata (title, artist, album, duration in milliseconds). Supports reading tags from both `format.tags` and `streams[0].tags`, and falls back to "Unknown" when tags are missing. Includes a `-v` / `--verbose` flag for real‑time progress logging to stderr without polluting the JSON output. Useful for cataloguing a music library before filtering or feeding into the Last.fm scrobbler pipeline.
 - `--dry-run` flag on `manual_scrobbler.py` to validate and preview a CSV without submitting anything.
 - Support for reading Last.fm credentials from environment variables (`LASTFM_API_KEY`, `LASTFM_API_SECRET`, `LASTFM_USERNAME`, `LASTFM_PASSWORD_HASH`) as an alternative to command-line flags, so they no longer need to appear in shell history or `ps` output.
 - Automatic batching of scrobble submissions into groups of 50 (Last.fm's `track.scrobble` API limit per call), with per-batch progress logging.
