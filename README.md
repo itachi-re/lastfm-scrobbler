@@ -32,6 +32,7 @@
   - [3. Store Your Credentials Securely](#3-store-your-credentials-securely)
   - [4. Set Up a Virtual Environment](#4-set-up-a-virtual-environment)
 - [Quick Start](#-quick-start)
+- [Quick Start with uv (Recommended)](#-quick-start-with-uv-recommended)
 - [CSV Format](#-csv-format)
 - [Command-Line Options](#️-command-line-options)
 - [Rate & Batch Handling](#️-rate--batch-handling)
@@ -64,6 +65,7 @@
 - [x] **Python 3.6** or later ([Download here](https://www.python.org/downloads/))
 - [x] **Git** ([Download here](https://git-scm.com/downloads))
 - [x] A CSV file with your listening history (works with [Pano Scrobbler](https://panoscrobbler.com/) exports)
+- [x] *(Optional, recommended)* [**uv**](https://docs.astral.sh/uv/) — a much faster drop-in replacement for `venv` + `pip`. See [Quick Start with uv](#-quick-start-with-uv-recommended).
 
 ## 🔑 Setup
 
@@ -174,6 +176,8 @@ If that prints your key, you're good.
 
 ### 4. Set Up a Virtual Environment
 
+> 💡 **Faster alternative:** if you have [`uv`](https://docs.astral.sh/uv/) installed, skip straight to [Quick Start with uv](#-quick-start-with-uv-recommended) — it replaces this whole step and the `pip install` step below with two much faster commands.
+
 ```bash
 cd lastfm-scrobbler
 python3 -m venv venv
@@ -216,6 +220,46 @@ python3 manual_scrobbler.py \
 ```
 
 Flags always take priority over environment variables if both are set.
+
+## 🚀 Quick Start with uv (Recommended)
+
+[`uv`](https://docs.astral.sh/uv/) is a drop-in replacement for `venv` + `pip`, written in Rust. It resolves and installs dependencies significantly faster and needs one less command to get to a working environment. **If you have `uv` installed, use this path instead of the `venv`/`pip` steps above** — everything else in this README (credentials, CSV format, CLI flags) stays exactly the same.
+
+Install `uv` first if you don't have it (see the [official install guide](https://docs.astral.sh/uv/getting-started/installation/) for all platforms):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then:
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/itachi-re/lastfm-scrobbler.git
+cd lastfm-scrobbler
+
+# 2. Create & activate the virtual environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# 3. Install dependencies (resolves + installs from requirements.txt)
+uv pip install -r requirements.txt
+
+# 4. Dry-run first — validate your CSV without submitting anything
+python3 manual_scrobbler.py --dry-run your_file.csv
+
+# 5. Run for real (using env vars set up in Setup step 3)
+python3 manual_scrobbler.py your_file.csv
+```
+
+Notes:
+- `uv venv` defaults to a `.venv` folder (note the leading dot) rather than `venv` — activation paths differ accordingly.
+- Once activated, `python3 manual_scrobbler.py ...` works identically to the standard `venv` setup — `uv` only replaces environment creation and package installation, not how the script itself is run.
+- If you'd rather not activate the environment manually at all, `uv run` will create/reuse the environment and run a command inside it in one step:
+  ```bash
+  uv run --with-requirements requirements.txt python3 manual_scrobbler.py --dry-run your_file.csv
+  ```
+  This is convenient for a single one-off invocation; for repeated runs, activating once with `source .venv/bin/activate` is simpler.
 
 ## 📊 CSV Format
 
@@ -296,12 +340,13 @@ Notes for Termux:
 - Skip the `venv` step if storage is tight — Termux's Python install is already isolated per-app.
 - Use `termux-setup-storage` first if your CSV lives in shared storage (e.g. `~/storage/downloads/`).
 - Set credentials as environment variables in `~/.bashrc` so you don't retype them each session (see [Setup step 3](#3-store-your-credentials-securely) for the secure-storage pattern).
+- `uv` also runs under Termux (`pkg install rust` may be needed as a build dependency depending on your Termux setup), but given Termux's already-isolated per-app Python, the speed gain is less noticeable than on desktop — the standard `pip install -r requirements.txt` path above is simplest here.
 
 ## 🆘 Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| **`externally-managed-environment`** | Use a virtual environment: `python3 -m venv venv` |
+| **`externally-managed-environment`** | Use a virtual environment: `python3 -m venv venv` (or `uv venv` — see [Quick Start with uv](#-quick-start-with-uv-recommended)) |
 | **`zsh: parse error near ...`** | You pasted Python code straight into your shell. Run `python3` first to enter the interpreter, or use the script-file method in [Setup step 2](#2-generate-your-password-hash) |
 | **`Missing required credential(s)`** | Pass all four credentials as flags, or set the matching `LASTFM_*` env var |
 | **`"Invalid API key"`** | Double-check your API key/secret from Last.fm |
@@ -309,6 +354,7 @@ Notes for Termux:
 | **Rows skipped as "out of range"** | Last.fm only accepts scrobbles from the last 14 days — older listens can't be backfilled this way |
 | **Upload fails mid-way** | Check your CSV formatting and internet connection; failed batches are logged with the batch number so you can isolate the issue |
 | **`ModuleNotFoundError: pylast` (Termux)** | Run `pkg install python-pip` first, then `pip install -r requirements.txt` |
+| **`uv: command not found`** | `uv` isn't installed or isn't on your `PATH`. Install it via the [official installer](https://docs.astral.sh/uv/getting-started/installation/), or just use the standard `venv`/`pip` path instead — both work identically for this script |
 
 ## 🔧 Advanced Usage
 
@@ -321,6 +367,12 @@ python3 manual_scrobbler.py file.csv
 
 # Full help
 python3 manual_scrobbler.py --help
+```
+
+With `uv`, the same invocations work once the environment is activated (see [Quick Start with uv](#-quick-start-with-uv-recommended)), or in one shot via `uv run`:
+
+```bash
+uv run --with-requirements requirements.txt python3 manual_scrobbler.py --help
 ```
 
 ## 🤝 Contributing
@@ -340,6 +392,7 @@ python3 manual_scrobbler.py --help
 - [Last.fm API](https://www.last.fm/api) - Amazing music data platform
 - [Pylast](https://github.com/pylast/pylast) - Python wrapper for Last.fm
 - [Pano Scrobbler](https://panoscrobbler.com/) - Great CSV export tool
+- [uv](https://docs.astral.sh/uv/) - Fast Python package/environment manager by Astral
 
 ---
 
