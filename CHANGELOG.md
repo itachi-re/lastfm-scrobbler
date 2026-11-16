@@ -13,6 +13,7 @@ build a scrobble file, submit it.** The old single-script usage and the syntheti
 data generators are gone, so this release is not backward compatible.
 
 ### Added
+- `02_make_scrobbles.py`: `--days-ago N` and `--date YYYY-MM-DD` place the plays on an earlier day (ending at the current time of day) without typing a full timestamp. Only one of `--start`, `--end`, `--days-ago`, `--date` can be used at a time.
 - `01_scan_library.py`: scans a music folder recursively with `mutagen` and writes `library.csv` (`id`, `artist`, `title`, `album`, `albumArtist`, `durationMs`, `path`). Supports mp3, flac, m4a, ogg, opus, wav, wma, aac, ape and wv. Results are sorted, numbered and de-duplicated, with a warning for tracks that have no artist tag. `--filter` prints only matching rows.
 - `01b_pick_plays.py`: two ways to say which songs you played and how many times, with everything else staying at 0.
   - `--template` writes `plays-template.csv`, every song with a `plays` column of zeros, to fill in with a spreadsheet editor.
