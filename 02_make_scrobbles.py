@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Step 2 - turn your play list into music-scrobble-<date>-<n>.csv
+(<date> is the day the last play ends, not the day you run this)
 
 Input is plays.txt (from 01b_pick_plays.py, or typed by hand) or the filled-in
 plays-template.csv from 01b_pick_plays.py --template. In a txt file, one song per
@@ -223,7 +224,7 @@ def main():
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    out = next_filename(out_dir, now.strftime("%Y-%m-%d"))
+    out = next_filename(out_dir, end.strftime("%Y-%m-%d"))
 
     fields = ["timeHuman", "timeMs", "artist", "track", "album", "albumArtist", "durationMs"]
     t = start
