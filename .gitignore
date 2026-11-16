@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+library.csv
+plays.txt
+plays-template.csv
+music-scrobble-*.csv
+*.sent
