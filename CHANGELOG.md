@@ -33,6 +33,7 @@ data generators are gone, so this release is not backward compatible.
 - `.gitignore` entries for generated, personal data: `library.csv`, `plays.txt`, `plays-template.csv`, `music-scrobble-*.csv`, `*.sent`.
 
 ### Changed
+- `02_make_scrobbles.py`: the output filename uses the date the last play ends (local time) instead of today's date.
 - `README.md` rewritten for the new workflow, with a pipeline diagram, per-step instructions, an options reference, a refreshed troubleshooting table, and a responsible-use note. Minimum Python raised to 3.8 to match current `mutagen`, and the virtual environment folder is now `.venv`.
 - `requirements.txt` now lists `mutagen` and `pylast`.
 - Scrobble CSVs are read with `utf-8-sig`, so BOM-prefixed exports from Windows tools still work. Pano Scrobbler CSVs remain compatible (`artist`, `track`, `timeMs`, optional `album`).
