@@ -19,9 +19,12 @@ Timestamps: plays are laid back-to-back using each track's real duration.
   default        the last play ends right now
   --end   "2026-11-17 18:30"   last play ends then
   --start "2026-11-17 14:00"   first play starts then
+  --days-ago 13                last play ends at this time of day, 13 days back
+  --date 2026-11-04            last play ends at this time of day, on that date
 
     python3 02_make_scrobbles.py plays.txt
     python3 02_make_scrobbles.py plays.txt --shuffle --seed 1
+    python3 02_make_scrobbles.py plays.txt --date 2026-11-04
 """
 import argparse
 import csv
@@ -167,11 +170,14 @@ def main():
     ap.add_argument("--out-dir", default=".")
     ap.add_argument("--start", type=parse_time, help='first play starts at "YYYY-MM-DD HH:MM" (local time)')
     ap.add_argument("--end", type=parse_time, help='last play ends at "YYYY-MM-DD HH:MM" (local time)')
+    ap.add_argument("--days-ago", type=int, metavar="N", help="place the plays N days back (ends at this time of day)")
+    ap.add_argument("--date", type=lambda s: datetime.strptime(s, "%Y-%m-%d").date(),
+                    help="place the plays on this day, YYYY-MM-DD (ends at this time of day)")
     ap.add_argument("--shuffle", action="store_true", help="shuffle the expanded play order")
     ap.add_argument("--seed", type=int)
     args = ap.parse_args()
-    if args.start and args.end:
-        sys.exit("Use --start or --end, not both.")
+    if sum(x is not None for x in (args.start, args.end, args.days_ago, args.date)) > 1:
+        sys.exit("Use only one of --start, --end, --days-ago, --date.")
 
     lib = load_library(args.library)
     playlist, problems = [], []
@@ -201,6 +207,12 @@ def main():
 
     total = timedelta(milliseconds=sum(r["durationMs"] for r in playlist))
     now = datetime.now().astimezone()
+    if args.date:
+        args.days_ago = (now.date() - args.date).days
+    if args.days_ago is not None:
+        if args.days_ago < 0:
+            sys.exit("--days-ago/--date must not be in the future.")
+        args.end = now - timedelta(days=args.days_ago)
     start = args.start or ((args.end or now) - total)
     end = start + total
 
