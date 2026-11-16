@@ -3,21 +3,34 @@
 # 🎵 Last.fm Manual Scrobbler
 
 **Bulk-upload missing listening history to Last.fm from a CSV file — for when your scrobbler fails you.**
-
-[![GitHub Repo stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/issues)
-[![GitHub license](https://img.shields.io/github/license/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/blob/main/LICENSE)
-[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+ 
+[![Stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
+[![Forks](https://img.shields.io/github/forks/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/network/members)
+[![Watchers](https://img.shields.io/github/watchers/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/watchers)
+ 
+[![Issues](https://img.shields.io/github/issues/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
+[![Last commit](https://img.shields.io/github/last-commit/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
+[![Contributors](https://img.shields.io/github/contributors/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/graphs/contributors)
+[![Repo size](https://img.shields.io/github/repo-size/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler)
+[![Code size](https://img.shields.io/github/languages/code-size/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler)
+[![Top language](https://img.shields.io/github/languages/top/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler)
+[![License](https://img.shields.io/github/license/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
 [![Maintained](https://img.shields.io/badge/maintained-yes-success.svg)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
-
-**Runs anywhere Python does:**
-
-[![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)](#-prerequisites)
-[![Windows](https://img.shields.io/badge/Windows-supported-0078D6?logo=windows&logoColor=white)](#-prerequisites)
-[![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#-prerequisites)
-[![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#-android--termux)
-
+ 
+[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![uv](https://img.shields.io/badge/uv-compatible-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
+[![pylast](https://img.shields.io/badge/pylast-wrapper-informational)](https://github.com/pylast/pylast)
+[![Last.fm API](https://img.shields.io/badge/Last.fm-API-D51007?logo=lastdotfm&logoColor=white)](https://www.last.fm/api)
+[![Pano Scrobbler](https://img.shields.io/badge/Pano%20Scrobbler-CSV%20exports-8A2BE2)](https://panoscrobbler.com/)
+ 
+[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#install)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)](#install)
+[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)](#macos)
+[![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#android-termux)
+ 
 </div>
 
 ---
