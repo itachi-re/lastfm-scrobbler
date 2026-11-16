@@ -2,13 +2,12 @@
 
 # 🎵 Last.fm Manual Scrobbler
 
-<<<<<<< Updated upstream
-**Bulk-upload missing listening history to Last.fm from a CSV file — for when your scrobbler fails you.**
- 
+**Backfill plays your scrobbler missed: scan your library, mark what you played, send it to Last.fm.**
+
 [![Stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
 [![Forks](https://img.shields.io/github/forks/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/network/members)
 [![Watchers](https://img.shields.io/github/watchers/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/watchers)
- 
+
 [![Issues](https://img.shields.io/github/issues/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
 [![Last commit](https://img.shields.io/github/last-commit/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
@@ -20,33 +19,19 @@
 [![License](https://img.shields.io/github/license/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
 [![Maintained](https://img.shields.io/badge/maintained-yes-success.svg)](https://github.com/itachi-re/lastfm-scrobbler/commits/main)
- 
-[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-compatible-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
 [![pylast](https://img.shields.io/badge/pylast-wrapper-informational)](https://github.com/pylast/pylast)
+[![mutagen](https://img.shields.io/badge/mutagen-tag%20reader-informational)](https://mutagen.readthedocs.io/)
 [![Last.fm API](https://img.shields.io/badge/Last.fm-API-D51007?logo=lastdotfm&logoColor=white)](https://www.last.fm/api)
-[![Pano Scrobbler](https://img.shields.io/badge/Pano%20Scrobbler-CSV%20exports-8A2BE2)](https://panoscrobbler.com/)
- 
-[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#install)
-[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)](#install)
-[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)](#macos)
-[![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#android-termux)
- 
-=======
-**Backfill plays your scrobbler missed: scan your library, mark what you played, send it to Last.fm.**
-
-[![GitHub Repo stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/issues)
-[![GitHub license](https://img.shields.io/github/license/itachi-re/lastfm-scrobbler)](https://github.com/itachi-re/lastfm-scrobbler/blob/main/LICENSE)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/itachi-re/lastfm-scrobbler/pulls)
+[![Pano Scrobbler](https://img.shields.io/badge/Pano%20Scrobbler-CSV%20compatible-8A2BE2)](https://panoscrobbler.com/)
 
 [![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)](#-prerequisites)
 [![Windows](https://img.shields.io/badge/Windows-supported-0078D6?logo=windows&logoColor=white)](#-prerequisites)
 [![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#-prerequisites)
 [![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#-android--termux)
 
->>>>>>> Stashed changes
 </div>
 
 ---
@@ -58,23 +43,10 @@
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
 - [Setup](#-setup)
-<<<<<<< Updated upstream
-  - [1. Get Your Last.fm API Credentials](#1-get-your-lastfm-api-credentials)
-  - [2. Generate Your Password Hash](#2-generate-your-password-hash)
-  - [3. Store Your Credentials Securely](#3-store-your-credentials-securely)
-  - [4. Set Up a Virtual Environment](#4-set-up-a-virtual-environment)
-- [Quick Start](#-quick-start)
-- [Quick Start with uv (Recommended)](#-quick-start-with-uv-recommended)
-- [CSV Format](#-csv-format)
-- [Command-Line Options](#️-command-line-options)
-- [Rate & Batch Handling](#️-rate--batch-handling)
-- [Example Output](#-example-output)
-=======
 - [Quick start](#-quick-start)
 - [The workflow in detail](#-the-workflow-in-detail)
 - [Command-line options](#️-command-line-options)
 - [Example output](#-example-output)
->>>>>>> Stashed changes
 - [Android / Termux](#-android--termux)
 - [Troubleshooting](#-troubleshooting)
 - [Project layout](#-project-layout)
@@ -136,18 +108,10 @@ Step 4 is a **preview by default**. Nothing is sent, and nothing logs in, unless
 
 ## 📝 Prerequisites
 
-<<<<<<< Updated upstream
-- [x] A [Last.fm account](https://www.last.fm/join)
-- [x] **Python 3.6** or later ([Download here](https://www.python.org/downloads/))
-- [x] **Git** ([Download here](https://git-scm.com/downloads))
-- [x] A CSV file with your listening history (works with [Pano Scrobbler](https://panoscrobbler.com/) exports)
-- [x] *(Optional, recommended)* [**uv**](https://docs.astral.sh/uv/) — a much faster drop-in replacement for `venv` + `pip`. See [Quick Start with uv](#-quick-start-with-uv-recommended).
-=======
 - A [Last.fm account](https://www.last.fm/join)
 - **Python 3.8+** ([download](https://www.python.org/downloads/))
 - **Git** ([download](https://git-scm.com/downloads))
 - A music library with proper tags (artist and title at minimum)
->>>>>>> Stashed changes
 
 ## 🔑 Setup
 
@@ -240,8 +204,6 @@ Your public repo only ever contains the harmless `source` line.
 
 Check it worked:
 
-> 💡 **Faster alternative:** if you have [`uv`](https://docs.astral.sh/uv/) installed, skip straight to [Quick Start with uv](#-quick-start-with-uv-recommended) — it replaces this whole step and the `pip install` step below with two much faster commands.
-
 ```bash
 echo $LASTFM_USERNAME
 ```
@@ -291,51 +253,7 @@ python3 01_scan_library.py --filter kalafina      # print only matching rows
 
 Walks the folder recursively, reads the tags, drops exact duplicates, sorts by artist and title, and numbers every track. The numbers are the `id` column in `library.csv`. Re-run it whenever your library changes.
 
-<<<<<<< Updated upstream
-## 🚀 Quick Start with uv (Recommended)
-
-[`uv`](https://docs.astral.sh/uv/) is a drop-in replacement for `venv` + `pip`, written in Rust. It resolves and installs dependencies significantly faster and needs one less command to get to a working environment. **If you have `uv` installed, use this path instead of the `venv`/`pip` steps above** — everything else in this README (credentials, CSV format, CLI flags) stays exactly the same.
-
-Install `uv` first if you don't have it (see the [official install guide](https://docs.astral.sh/uv/getting-started/installation/) for all platforms):
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Then:
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/itachi-re/lastfm-scrobbler.git
-cd lastfm-scrobbler
-
-# 2. Create & activate the virtual environment
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# 3. Install dependencies (resolves + installs from requirements.txt)
-uv pip install -r requirements.txt
-
-# 4. Dry-run first — validate your CSV without submitting anything
-python3 manual_scrobbler.py --dry-run your_file.csv
-
-# 5. Run for real (using env vars set up in Setup step 3)
-python3 manual_scrobbler.py your_file.csv
-```
-
-Notes:
-- `uv venv` defaults to a `.venv` folder (note the leading dot) rather than `venv` — activation paths differ accordingly.
-- Once activated, `python3 manual_scrobbler.py ...` works identically to the standard `venv` setup — `uv` only replaces environment creation and package installation, not how the script itself is run.
-- If you'd rather not activate the environment manually at all, `uv run` will create/reuse the environment and run a command inside it in one step:
-  ```bash
-  uv run --with-requirements requirements.txt python3 manual_scrobbler.py --dry-run your_file.csv
-  ```
-  This is convenient for a single one-off invocation; for repeated runs, activating once with `source .venv/bin/activate` is simpler.
-
-## 📊 CSV Format
-=======
 It warns about tracks with no artist tag. Fix those in your tagger first, because Last.fm needs an artist.
->>>>>>> Stashed changes
 
 ### Step 2: choose what you played
 
@@ -477,27 +395,6 @@ termux-setup-storage                                  # once, to reach shared st
 python 01_scan_library.py ~/storage/music
 ```
 
-<<<<<<< Updated upstream
-Notes for Termux:
-- Skip the `venv` step if storage is tight — Termux's Python install is already isolated per-app.
-- Use `termux-setup-storage` first if your CSV lives in shared storage (e.g. `~/storage/downloads/`).
-- Set credentials as environment variables in `~/.bashrc` so you don't retype them each session (see [Setup step 3](#3-store-your-credentials-securely) for the secure-storage pattern).
-- `uv` also runs under Termux (`pkg install rust` may be needed as a build dependency depending on your Termux setup), but given Termux's already-isolated per-app Python, the speed gain is less noticeable than on desktop — the standard `pip install -r requirements.txt` path above is simplest here.
-
-## 🆘 Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| **`externally-managed-environment`** | Use a virtual environment: `python3 -m venv venv` (or `uv venv` — see [Quick Start with uv](#-quick-start-with-uv-recommended)) |
-| **`zsh: parse error near ...`** | You pasted Python code straight into your shell. Run `python3` first to enter the interpreter, or use the script-file method in [Setup step 2](#2-generate-your-password-hash) |
-| **`Missing required credential(s)`** | Pass all four credentials as flags, or set the matching `LASTFM_*` env var |
-| **`"Invalid API key"`** | Double-check your API key/secret from Last.fm |
-| **`"User not authorized"`** | Verify your username & password hash are correct |
-| **Rows skipped as "out of range"** | Last.fm only accepts scrobbles from the last 14 days — older listens can't be backfilled this way |
-| **Upload fails mid-way** | Check your CSV formatting and internet connection; failed batches are logged with the batch number so you can isolate the issue |
-| **`ModuleNotFoundError: pylast` (Termux)** | Run `pkg install python-pip` first, then `pip install -r requirements.txt` |
-| **`uv: command not found`** | `uv` isn't installed or isn't on your `PATH`. Install it via the [official installer](https://docs.astral.sh/uv/getting-started/installation/), or just use the standard `venv`/`pip` path instead — both work identically for this script |
-=======
 Set the `LASTFM_*` variables in `~/.bashrc` so you don't retype them (see [Setup step 3](#3-store-your-credentials-securely)).
 
 ## 🆘 Troubleshooting
@@ -516,7 +413,6 @@ Set the `LASTFM_*` variables in `~/.bashrc` so you don't retype them (see [Setup
 | `Missing environment variable(s)` | Export the `LASTFM_*` variables in this shell (`echo $LASTFM_USERNAME` to check) |
 | `externally-managed-environment` | Use a virtual environment (Setup step 4) |
 | `ModuleNotFoundError: mutagen` / `pylast` | Activate the venv and run `pip install -r requirements.txt` |
->>>>>>> Stashed changes
 
 ## 🗂️ Project layout
 
@@ -533,10 +429,10 @@ lastfm-scrobbler/
 
 Generated files (`library.csv`, `plays.txt`, `plays-template.csv`, `music-scrobble-*.csv`, `*.sent`) are git-ignored because they describe your listening.
 
-With `uv`, the same invocations work once the environment is activated (see [Quick Start with uv](#-quick-start-with-uv-recommended)), or in one shot via `uv run`:
+With `uv`, the same invocations work once the environment is activated (see [Install dependencies](#4-install-dependencies)), or in one shot via `uv run`:
 
 ```bash
-uv run --with-requirements requirements.txt python3 manual_scrobbler.py --help
+uv run --with-requirements requirements.txt python3 01_scan_library.py --help
 ```
 
 ## 🤝 Contributing
@@ -553,17 +449,10 @@ uv run --with-requirements requirements.txt python3 manual_scrobbler.py --help
 
 ## 🙏 Acknowledgments
 
-<<<<<<< Updated upstream
-- [Last.fm API](https://www.last.fm/api) - Amazing music data platform
-- [Pylast](https://github.com/pylast/pylast) - Python wrapper for Last.fm
-- [Pano Scrobbler](https://panoscrobbler.com/) - Great CSV export tool
-- [uv](https://docs.astral.sh/uv/) - Fast Python package/environment manager by Astral
-=======
 - [Last.fm API](https://www.last.fm/api)
 - [pylast](https://github.com/pylast/pylast), the Python wrapper for Last.fm
 - [mutagen](https://mutagen.readthedocs.io/), for reading audio tags
 - [Pano Scrobbler](https://panoscrobbler.com/), whose CSV export format this stays compatible with
->>>>>>> Stashed changes
 
 ---
 
