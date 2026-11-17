@@ -24,6 +24,8 @@ Backfill plays your scrobbler missed: scan your library, mark what you played, s
 
 [![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)](#setup)
 [![Windows](https://img.shields.io/badge/Windows-supported-0078D6?logo=windows&logoColor=white)](#setup)
+[![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#setup)
+[![Android (Termux)](https://img.shields.io/badge/Android-Termux-3DDC84?logo=android&logoColor=white)](#android-termux)
 
 ## Contents
 
@@ -31,6 +33,7 @@ Backfill plays your scrobbler missed: scan your library, mark what you played, s
 - [Responsible use](#responsible-use)
 - [Setup](#setup)
 - [Quick start](#quick-start)
+- [Android (Termux)](#android-termux)
 - [Usage](#usage)
 - [Limits to know](#limits-to-know)
 - [Options](#options)
@@ -73,7 +76,7 @@ Step 3 only previews by default. Nothing is sent, and nothing logs in, unless yo
 
 ## Setup
 
-You need a [Last.fm account](https://www.last.fm/join), [Python 3.8+](https://www.python.org/downloads/), [Git](https://git-scm.com/downloads), and a music library with artist and title tags.
+You need a [Last.fm account](https://www.last.fm/join), [Python 3.8+](https://www.python.org/downloads/), [Git](https://git-scm.com/downloads), and a music library with artist and title tags. Linux, macOS and Windows are covered below; Android is covered in [its own section](#android-termux).
 
 ### 1. Get API credentials
 
@@ -81,7 +84,7 @@ Open the [Last.fm API account page](https://www.last.fm/api/account), choose **C
 
 ### 2. Install
 
-**Linux**
+**Linux and macOS**
 
 ```bash
 git clone https://github.com/itachi-re/lastfm-scrobbler.git
@@ -101,7 +104,9 @@ py -m venv .venv
 pip install -r requirements.txt
 ```
 
-With [uv](https://docs.astral.sh/uv/), `uv venv` followed by `uv pip install -r requirements.txt` does the same. On Windows, use `python` wherever this README says `python3`.
+On macOS, if `python3 --version` shows less than 3.8, install a newer Python with `brew install python` or from [python.org](https://www.python.org/downloads/). Apple Music keeps its files under `~/Music/Music/Media`, so point step 1 at the folder that actually holds your audio files.
+
+With [uv](https://docs.astral.sh/uv/), `uv venv` followed by `uv pip install -r requirements.txt` does the same. On Windows and in Termux, use `python` wherever this README says `python3`.
 
 ### 3. Set your credentials
 
@@ -113,7 +118,7 @@ python3 -c "import getpass,hashlib; print(hashlib.md5(getpass.getpass().encode()
 
 It asks for the password without showing it, so nothing lands in your shell history. Treat the hash like a password: with your API key and secret it is enough to log in through the API.
 
-**Linux, this terminal only**
+**Linux and macOS, this terminal only**
 
 ```bash
 export LASTFM_API_KEY="your_api_key"
@@ -122,7 +127,7 @@ export LASTFM_USERNAME="your_username"
 export LASTFM_PASSWORD_HASH="your_password_hash"
 ```
 
-For something permanent, put the same lines in a file such as `~/.config/local/lastfm.env`, run `chmod 600` on it, and add `[ -f ~/.config/local/lastfm.env ] && source ~/.config/local/lastfm.env` to your shell config. That keeps secrets out of a public dotfiles repo.
+For something permanent, put the same lines in a file such as `~/.config/local/lastfm.env`, run `chmod 600` on it, and add `[ -f ~/.config/local/lastfm.env ] && source ~/.config/local/lastfm.env` to your shell config (`~/.bashrc` on most Linux, `~/.zshrc` on macOS). That keeps secrets out of a public dotfiles repo.
 
 **Windows, this PowerShell window only**
 
@@ -135,7 +140,7 @@ $env:LASTFM_PASSWORD_HASH = "your_password_hash"
 
 To keep them, run `setx LASTFM_API_KEY "your_api_key"` (and the same for the others), then open a new window.
 
-Check with `echo $LASTFM_USERNAME` (Linux) or `echo $env:LASTFM_USERNAME` (Windows).
+Check with `echo $LASTFM_USERNAME` (Linux, macOS) or `echo $env:LASTFM_USERNAME` (Windows).
 
 ## Quick start
 
@@ -149,6 +154,26 @@ python3 03_submit_scrobbles.py <file it printed> --send    #     send for real
 ```
 
 Use the exact filename step 2 prints. On Windows, scan with the path to your music, for example `python 01_scan_library.py $HOME\Music`.
+
+## Android (Termux)
+
+The scripts are plain Python, so they run in [Termux](https://termux.dev/) without root. Install Termux from F-Droid or its GitHub releases; the Play Store build is outdated.
+
+```bash
+pkg update && pkg upgrade
+pkg install python git
+
+git clone https://github.com/itachi-re/lastfm-scrobbler.git
+cd lastfm-scrobbler
+pip install -r requirements.txt
+
+termux-setup-storage                          # once, to reach shared storage
+python 01_scan_library.py ~/storage/music
+```
+
+Put the `LASTFM_*` exports in `~/.bashrc` so you don't retype them (see [Setup, step 3](#3-set-your-credentials)). Everything after that works as on Linux, with `python` instead of `python3`.
+
+On a phone the interactive picker (`python 01b_pick_plays.py`) or a hand-written `plays.txt` is easier than the spreadsheet. If you do use the template, edit it in a spreadsheet app and save it as CSV with UTF-8 encoding.
 
 ## Usage
 
@@ -171,9 +196,9 @@ There are three ways. All of them leave unlisted songs at 0.
 python3 01b_pick_plays.py --template
 ```
 
-Open `plays-template.csv` in LibreOffice or Excel. Every song is there with a `plays` column of zeros; type a number next to each song you played. Sorting and filtering are fine, because each row carries its own `id`.
+Open `plays-template.csv` in LibreOffice or Excel (on macOS, Numbers works too). Every song is there with a `plays` column of zeros; type a number next to each song you played. Sorting and filtering are fine, because each row carries its own `id`.
 
-When you save, choose **CSV UTF-8** (in LibreOffice: Text CSV, UTF-8, comma-separated). Do not save as `.ods` or `.xlsx`, and do not use plain "CSV", or Japanese titles get mangled and step 2 can't read the file. If the `id` column shows `###`, the column is too narrow: widen it (this is display only).
+When you save, choose **CSV UTF-8** (in LibreOffice: Text CSV, UTF-8, comma-separated; in Numbers: File, Export To, CSV, with the text encoding set to Unicode UTF-8). Do not save as `.ods` or `.xlsx`, and do not use plain "CSV", or Japanese titles get mangled and step 2 can't read the file. If the `id` column shows `###`, the column is too narrow: widen it (this is display only).
 
 **B. Interactive**
 
