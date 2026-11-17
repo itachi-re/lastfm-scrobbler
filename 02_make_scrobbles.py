@@ -16,6 +16,8 @@ line, any of these styles:
 Matching ignores case, accents and punctuation, and allows partial names.
 If a line is ambiguous or not found, nothing is written and you get candidates.
 
+Order: the plays are shuffled on every build (use --no-shuffle to keep them grouped).
+
 Timestamps: plays are laid back-to-back using each track's real duration.
   default        the last play ends right now
   --end   "2026-11-17 18:30"   last play ends then
@@ -24,7 +26,8 @@ Timestamps: plays are laid back-to-back using each track's real duration.
   --date 2026-11-04            last play ends at this time of day, on that date
 
     python3 02_make_scrobbles.py plays.txt
-    python3 02_make_scrobbles.py plays.txt --shuffle --seed 1
+    python3 02_make_scrobbles.py plays.txt --seed 1          # same shuffle every time
+    python3 02_make_scrobbles.py plays.txt --no-shuffle      # keep songs grouped
     python3 02_make_scrobbles.py plays.txt --date 2026-11-04
 """
 import argparse
@@ -174,8 +177,9 @@ def main():
     ap.add_argument("--days-ago", type=int, metavar="N", help="place the plays N days back (ends at this time of day)")
     ap.add_argument("--date", type=lambda s: datetime.strptime(s, "%Y-%m-%d").date(),
                     help="place the plays on this day, YYYY-MM-DD (ends at this time of day)")
-    ap.add_argument("--shuffle", action="store_true", help="shuffle the expanded play order")
-    ap.add_argument("--seed", type=int)
+    ap.add_argument("--shuffle", action="store_true", help=argparse.SUPPRESS)  # old flag, shuffling is now the default
+    ap.add_argument("--no-shuffle", action="store_true", help="keep songs grouped in file order instead of shuffling")
+    ap.add_argument("--seed", type=int, help="make the shuffle repeatable")
     args = ap.parse_args()
     if sum(x is not None for x in (args.start, args.end, args.days_ago, args.date)) > 1:
         sys.exit("Use only one of --start, --end, --days-ago, --date.")
@@ -203,7 +207,7 @@ def main():
     if not playlist:
         sys.exit("plays file is empty.")
 
-    if args.shuffle:
+    if not args.no_shuffle:
         random.Random(args.seed).shuffle(playlist)
 
     total = timedelta(milliseconds=sum(r["durationMs"] for r in playlist))
