@@ -1,6 +1,14 @@
-# Last.fm Manual Scrobbler
+# 🎵 Last.fm Manual Scrobbler
 
-Backfill plays your scrobbler missed: scan your library, mark what you played, send it to Last.fm.
+**Backfill missed listens to Last.fm from a CSV file, in one command.**
+
+Did your player, device or scrobbler drop some plays? Export or generate a CSV
+of what you listened to, run a dry-run to check it, and upload everything in
+validated, de-duplicated batches. It works with Pano Scrobbler exports and runs
+anywhere Python does, including Android via Termux.
+
+> ⚠️ Last.fm's API only accepts scrobbles from the last 14 days. This tool is
+> for filling recent gaps, not for importing years of old history.
 
 [![Stars](https://img.shields.io/github/stars/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/stargazers)
 [![Forks](https://img.shields.io/github/forks/itachi-re/lastfm-scrobbler?style=social)](https://github.com/itachi-re/lastfm-scrobbler/network/members)
