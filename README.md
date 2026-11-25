@@ -108,7 +108,7 @@ Step 3 only previews by default. Nothing is sent, and nothing logs in, unless yo
 | 📦 **Batching, retries, resume** | 50 scrobbles per request, paced by `--delay`. Network errors retry, rate limits wait and retry, and an interrupted send prints the exact `--skip` value to resume from |
 | 🔒 **Double-send protection** | A `.sent` marker stops you submitting the same file twice by accident |
 | 🔐 **Env-var credentials** | Your API secret and password stay out of shell history |
-| 🌙 **Nightly automation** | `run_nightly.sh` plus a systemd timer builds and sends the day's file at 22:00, and skips unchanged or empty templates |
+| 🌙 **Nightly automation** | `last_nightly.sh` plus a systemd timer builds and sends the day's file at 22:00, and skips unchanged or empty templates |
 | 🔁 **Pano Scrobbler CSVs still work** | Step 3 accepts any CSV with `artist`, `track`, `timeMs` (and optional `album`) columns |
 
 ## 🔑 Setup
@@ -347,7 +347,7 @@ After sending, check your Last.fm profile. The script can only tell what Last.fm
 
 ## 🌙 Automate the nightly run
 
-Steps 1 and 1b stay manual. Only steps 2 and 3 are automated: every night at 22:00, `run_nightly.sh` builds yesterday's file from `plays-template.csv` and sends it.
+Steps 1 and 1b stay manual. Only steps 2 and 3 are automated: every night at 22:00, `last_nightly.sh` builds yesterday's file from `plays-template.csv` and sends it.
 
 ```
 python3 02_make_scrobbles.py plays-template.csv --days-ago 1
@@ -366,10 +366,10 @@ The script is made to be safe to leave running:
 
 > ⚠️ It submits whatever is in the template. Only fill it with plays you actually listened to (see [Responsible use](#-responsible-use)).
 
-`run_nightly.sh` needs Linux (it uses `sha256sum` and GNU `grep -P`). Make it executable once:
+`last_nightly.sh` needs Linux (it uses `sha256sum` and GNU `grep -P`). Make it executable once:
 
 ```bash
-chmod +x run_nightly.sh
+chmod +x last_nightly.sh
 ```
 
 ### 1. Credentials for the timer
@@ -400,7 +400,7 @@ Description=Nightly Last.fm scrobble
 [Service]
 Type=oneshot
 EnvironmentFile=%h/.config/lastfm-scrobbler.env
-ExecStart=/path/to/lastfm-scrobbler/run_nightly.sh
+ExecStart=/path/to/lastfm-scrobbler/last_nightly.sh
 EOF
 
 cat > ~/.config/systemd/user/lastfm-nightly.timer << 'EOF'
@@ -434,7 +434,7 @@ systemctl --user list-timers lastfm-nightly.timer
 <summary><strong>Prefer cron?</strong></summary>
 
 ```
-0 22 * * * set -a; . "$HOME/.config/lastfm-scrobbler.env"; set +a; /path/to/lastfm-scrobbler/run_nightly.sh
+0 22 * * * set -a; . "$HOME/.config/lastfm-scrobbler.env"; set +a; /path/to/lastfm-scrobbler/last_nightly.sh
 ```
 
 Cron does not catch up on runs missed while the machine was off.
@@ -558,7 +558,7 @@ lastfm-scrobbler/
 ├── 01b_pick_plays.py         # plays-template.csv, or interactive picker -> plays.txt
 ├── 02_make_scrobbles.py      # plays file -> music-scrobble-<date>-<n>.csv
 ├── 03_submit_scrobbles.py    # preview / send to Last.fm
-├── run_nightly.sh            # steps 2 + 3 for the nightly timer
+├── last_nightly.sh           # steps 2 + 3 for the nightly timer
 ├── requirements.txt
 ├── CHANGELOG.md
 └── LICENSE
