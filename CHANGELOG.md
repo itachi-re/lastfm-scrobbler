@@ -12,7 +12,7 @@ Scheduling and reliability. Nothing here breaks the 261117 workflow: every new
 option is optional, and the only behaviour change is the default shuffle.
 
 ### Added
-- `run_nightly.sh`: automates steps 2 and 3 for a nightly timer. It builds yesterday's file with `02_make_scrobbles.py plays-template.csv --days-ago 1`, then sends it with `03_submit_scrobbles.py --send`. Steps 1 and 1b stay manual.
+- `last_nightly.sh`: automates steps 2 and 3 for a nightly timer. It builds yesterday's file with `02_make_scrobbles.py plays-template.csv --days-ago 1`, then sends it with `03_submit_scrobbles.py --send`. Steps 1 and 1b stay manual.
   - Skips the run when every `plays` count in the template is 0.
   - Skips when the template is unchanged since the last successful send (hash kept in `.last-submitted.sha256`), so the same plays are not sent twice.
   - On a rate limit, waits 15 minutes and resumes from the `--skip` value the submit step prints, up to 3 attempts.
