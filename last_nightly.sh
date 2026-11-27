@@ -7,7 +7,6 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 PY=.venv/bin/python
 TEMPLATE=plays-template.csv
-STATE=.last-submitted.sha256   # hash of the template that was last sent
 LOG=nightly.log
 DAYS_AGO=1
 
@@ -28,19 +27,12 @@ then
     exit 0
 fi
 
-# 2) don't resend an identical template (it would create duplicate scrobbles)
-HASH=$(sha256sum "$TEMPLATE" | cut -d' ' -f1)
-if [ -f "$STATE" ] && [ "$(cat "$STATE")" = "$HASH" ]; then
-    echo "template unchanged since the last successful send, skipping"
-    exit 0
-fi
-
-# 3) step 2: make the CSV (last line of its output ends with "-> <filename>")
+# 2) step 2: make the CSV (last line of its output ends with "-> <filename>")
 OUT=$("$PY" 02_make_scrobbles.py "$TEMPLATE" --days-ago "$DAYS_AGO" | tee /dev/stderr | tail -n1 | sed 's/.* -> //')
 [ -f "$OUT" ] || { echo "ERROR: step 2 produced no file"; exit 1; }
 echo "built $OUT"
 
-# 4) step 3: send; if Last.fm rate-limits, wait 15 min and resume where it stopped
+# 3) step 3: send; if Last.fm rate-limits, wait 15 min and resume where it stopped
 SKIP=0
 for attempt in 1 2 3; do
     set +e
@@ -48,7 +40,6 @@ for attempt in 1 2 3; do
     rc=${PIPESTATUS[0]}
     set -e
     if [ "$rc" -eq 0 ]; then
-        echo "$HASH" > "$STATE"
         echo "done"
         exit 0
     fi
