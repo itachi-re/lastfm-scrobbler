@@ -14,17 +14,17 @@ option is optional, and the only behaviour change is the default shuffle.
 ### Added
 - `last_nightly.sh`: automates steps 2 and 3 for a nightly timer. It builds yesterday's file with `02_make_scrobbles.py plays-template.csv --days-ago 1`, then sends it with `03_submit_scrobbles.py --send`. Steps 1 and 1b stay manual.
   - Skips the run when every `plays` count in the template is 0.
-  - Skips when the template is unchanged since the last successful send (hash kept in `.last-submitted.sha256`), so the same plays are not sent twice.
+  - Sends the template every night, whether or not it changed since the last run.
   - On a rate limit, waits 15 minutes and resumes from the `--skip` value the submit step prints, up to 3 attempts.
   - Runs from its own folder and calls `.venv/bin/python` directly, so it does not depend on `activate` or on where the project lives.
-  - Logs to `nightly.log`. Needs Linux (`sha256sum`, GNU `grep -P`).
+  - Logs to `nightly.log`. Needs Linux (GNU `grep -P`).
 - `02_make_scrobbles.py`: `--days-ago N` and `--date YYYY-MM-DD` place the plays so the last one ends at the current time of day, N days back or on that date. Only one of `--start`, `--end`, `--days-ago`, `--date` may be used at a time.
 - `03_submit_scrobbles.py`:
   - `--skip N` skips the first N scrobbles (oldest first) to resume an interrupted send.
   - `--delay SEC` pauses between batches (default 5) so Last.fm does not throttle bursts.
   - Rate-limit handling: on `Rate Limit Exceeded` the same batch is retried after 60, 120, 180 and 240 seconds. If it still fails, the script stops and prints the exact `--skip` value to resume with.
 - README sections for the nightly run (systemd user timer, env file for the timer, cron alternative), Limits to know, Windows and macOS install and credentials, and Android (Termux).
-- `.gitignore` entries for the nightly run's generated files: `nightly.log`, `.submit.out`, `.last-submitted.sha256`.
+- `.gitignore` entries for the nightly run's generated files: `nightly.log`, `.submit.out`.
 
 ### Changed
 - `02_make_scrobbles.py`: plays are shuffled on every build by default. Use `--no-shuffle` to keep each song's plays together and `--seed N` for a repeatable shuffle. The old `--shuffle` flag is still accepted (hidden from help) and has no effect.
