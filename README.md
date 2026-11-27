@@ -108,7 +108,7 @@ Step 3 only previews by default. Nothing is sent, and nothing logs in, unless yo
 | 📦 **Batching, retries, resume** | 50 scrobbles per request, paced by `--delay`. Network errors retry, rate limits wait and retry, and an interrupted send prints the exact `--skip` value to resume from |
 | 🔒 **Double-send protection** | A `.sent` marker stops you submitting the same file twice by accident |
 | 🔐 **Env-var credentials** | Your API secret and password stay out of shell history |
-| 🌙 **Nightly automation** | `last_nightly.sh` plus a systemd timer builds and sends the day's file at 22:00, and skips unchanged or empty templates |
+| 🌙 **Nightly automation** | `last_nightly.sh` plus a systemd timer builds and sends the day's file at 22:00, and skips an all-zero template |
 | 🔁 **Pano Scrobbler CSVs still work** | Step 3 accepts any CSV with `artist`, `track`, `timeMs` (and optional `album`) columns |
 
 ## 🔑 Setup
@@ -359,14 +359,14 @@ python3 03_submit_scrobbles.py <that file> --send
 The script is made to be safe to leave running:
 
 - **Skips if every count is 0.** An empty template does nothing.
-- **Skips an unchanged template.** It remembers the hash of the last template it sent successfully (`.last-submitted.sha256`), so the same plays are never sent twice by accident.
+- **Sends every night.** It sends whatever is in the template each run, even if the template hasn't changed since the night before.
 - **Resumes after a rate limit.** It waits 15 minutes and continues from the printed `--skip` value, up to 3 attempts, then tells you how to finish by hand.
 - **Can't be broken by moving the folder.** It `cd`s to its own location and calls `.venv/bin/python` directly, with no `activate`.
 - **Logs to `nightly.log`.**
 
 > ⚠️ It submits whatever is in the template. Only fill it with plays you actually listened to (see [Responsible use](#-responsible-use)).
 
-`last_nightly.sh` needs Linux (it uses `sha256sum` and GNU `grep -P`). Make it executable once:
+`last_nightly.sh` needs Linux (it uses GNU `grep -P`). Make it executable once:
 
 ```bash
 chmod +x last_nightly.sh
@@ -547,7 +547,7 @@ On a phone, the interactive picker (`python 01b_pick_plays.py`) or a hand-writte
 | `externally-managed-environment` | Use a virtual environment (Setup, step 2) |
 | `ModuleNotFoundError: mutagen` or `pylast` | Activate the virtual environment and run `pip install -r requirements.txt` |
 | Same error right after moving the folder | The venv holds absolute paths. Delete `.venv` and recreate it |
-| Nightly run did nothing | Read `nightly.log`. Usually every `plays` count is 0, or the template is unchanged since the last send |
+| Nightly run did nothing | Read `nightly.log`. Usually every `plays` count is 0 |
 | Timer never fires | Check `systemctl --user list-timers`, and run `loginctl enable-linger "$USER"` if you're logged out at 22:00 |
 
 ## 📁 Project layout
@@ -575,7 +575,6 @@ music-scrobble-*.csv
 *.sent
 nightly.log
 .submit.out
-.last-submitted.sha256
 ```
 
 ## 🤝 Contributing
