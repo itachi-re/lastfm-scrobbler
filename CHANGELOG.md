@@ -15,7 +15,8 @@ option is optional, and the only behaviour change is the default shuffle.
 - `last_nightly.sh`: automates steps 2 and 3 for a nightly timer. It builds yesterday's file with `02_make_scrobbles.py plays-template.csv --days-ago 1`, then sends it with `03_submit_scrobbles.py --send`. Steps 1 and 1b stay manual.
   - Skips the run when every `plays` count in the template is 0.
   - Sends the template every night, whether or not it changed since the last run.
-  - On a rate limit, waits 15 minutes and resumes from the `--skip` value the submit step prints, up to 3 attempts.
+  - Waits up to 10 minutes for DNS before starting, and retries a failed login (network error) every 2 minutes, so a run triggered right after boot or resume no longer dies on `Temporary failure in name resolution`.
+  - On a rate limit, waits 15 minutes and resumes from the `--skip` value the submit step prints. Up to 5 attempts in total.
   - Runs from its own folder and calls `.venv/bin/python` directly, so it does not depend on `activate` or on where the project lives.
   - Logs to `nightly.log`. Needs Linux (GNU `grep -P`).
 - `02_make_scrobbles.py`: `--days-ago N` and `--date YYYY-MM-DD` place the plays so the last one ends at the current time of day, N days back or on that date. Only one of `--start`, `--end`, `--days-ago`, `--date` may be used at a time.
