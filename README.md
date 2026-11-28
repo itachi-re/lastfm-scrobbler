@@ -360,7 +360,8 @@ The script is made to be safe to leave running:
 
 - **Skips if every count is 0.** An empty template does nothing.
 - **Sends every night.** It sends whatever is in the template each run, even if the template hasn't changed since the night before.
-- **Resumes after a rate limit.** It waits 15 minutes and continues from the printed `--skip` value, up to 3 attempts, then tells you how to finish by hand.
+- **Waits for the network.** If the timer fires right after boot or resume, it waits up to 10 minutes for DNS, and retries a failed login every 2 minutes (nothing has been sent at that point).
+- **Resumes after a rate limit.** It waits 15 minutes and continues from the printed `--skip` value, up to 5 attempts in total, then tells you how to finish by hand.
 - **Can't be broken by moving the folder.** It `cd`s to its own location and calls `.venv/bin/python` directly, with no `activate`.
 - **Logs to `nightly.log`.**
 
@@ -548,6 +549,7 @@ On a phone, the interactive picker (`python 01b_pick_plays.py`) or a hand-writte
 | `ModuleNotFoundError: mutagen` or `pylast` | Activate the virtual environment and run `pip install -r requirements.txt` |
 | Same error right after moving the folder | The venv holds absolute paths. Delete `.venv` and recreate it |
 | Nightly run did nothing | Read `nightly.log`. Usually every `plays` count is 0 |
+| `Temporary failure in name resolution` in `nightly.log` | The network wasn't up yet. The script now waits and retries; if you still see it after 5 attempts, check your connection and run it again by hand |
 | Timer never fires | Check `systemctl --user list-timers`, and run `loginctl enable-linger "$USER"` if you're logged out at 22:00 |
 
 ## 📁 Project layout
